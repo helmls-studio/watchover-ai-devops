@@ -1,0 +1,2 @@
+{"schema_version":"0.1","id":"evt-0001","at":"2026-09-01T09:00:00Z","actor":{"role":"ai","name":"deployer-ai"},"session_id":"session-a","type":"stage_change","summary":"Workspace initialized; starting read-only recon","stage":{"from":null,"to":"recon"}}
+{"schema_version":"0.1","id":"evt-0002","at":"2026-09-01T09:05:00Z","actor":{"role":"ai","name":"deployer-ai"},"session_id":"session-a","type":"fact_verified","summary":"Verified web health endpoint answers","fact":{"key":"app.web_health","status":"VERIFIED_REMOTE"},"evidence":["evidence/0002-web-health.txt"]}

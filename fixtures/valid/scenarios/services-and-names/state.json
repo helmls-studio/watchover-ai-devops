@@ -1,0 +1,279 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial target",
+    "provider_profile": "local",
+    "mode": "basic",
+    "updated_at": "2026-10-06T06:05:31Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "ai-deployer"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "verifying",
+  "activity": {
+    "summary": "Verifying each layer; web needs a fresh check and worker has not been checked",
+    "started_at": "2026-10-06T06:05:31Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "ai",
+    "last_progress": {
+      "at": "2026-10-06T06:05:31Z",
+      "summary": "api health re-checked"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: an API, a web front end and a background worker",
+    "components": [
+      {
+        "name": "api",
+        "role": "HTTP API"
+      },
+      {
+        "name": "web",
+        "role": "Front end"
+      },
+      {
+        "name": "worker",
+        "role": "Background jobs"
+      }
+    ],
+    "topology": "Three containers on this machine; web is exposed on a local port",
+    "resource_rationale": "One machine is enough for a single tester",
+    "heavier_alternatives": [
+      {
+        "alternative": "An orchestration cluster",
+        "why_unnecessary": "Three containers on one machine need no scheduler"
+      }
+    ],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "local",
+        "name": "Local containers",
+        "composition": "api, web and worker containers",
+        "region": "this machine",
+        "cost_range": {
+          "low": 0,
+          "high": 0,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": null,
+        "load_assumption": "One tester",
+        "uncertainty": "Runs on this machine at no cloud cost"
+      }
+    ],
+    "default_tier": "local",
+    "selected_tier": "local"
+  },
+  "pending_decision": null,
+  "resources": [
+    {
+      "id": "host",
+      "parent_id": null,
+      "provider": "local",
+      "type": "container host",
+      "name": "this machine",
+      "purpose": "Runs the containers",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "pre_existing",
+      "evidence_fact": null
+    },
+    {
+      "id": "api-container",
+      "parent_id": "host",
+      "provider": "local",
+      "type": "container",
+      "name": "demo-app-api-1",
+      "purpose": "Runs the API",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "resource.containers"
+    },
+    {
+      "id": "web-container",
+      "parent_id": "host",
+      "provider": "local",
+      "type": "container",
+      "name": "demo-app-web-1",
+      "purpose": "Runs the front end",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "resource.containers"
+    },
+    {
+      "id": "worker-container",
+      "parent_id": "host",
+      "provider": "local",
+      "type": "container",
+      "name": "demo-app-worker-1",
+      "purpose": "Runs background jobs",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "resource.containers"
+    },
+    {
+      "id": "db-volume",
+      "parent_id": "host",
+      "provider": "local",
+      "type": "volume",
+      "name": "demo-app_db-data",
+      "purpose": "Database data, created implicitly by compose",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_implicitly",
+      "evidence_fact": "resource.containers"
+    },
+    {
+      "id": "old-worker-container",
+      "parent_id": "host",
+      "provider": "local",
+      "type": "container",
+      "name": "demo-app-oldworker-1",
+      "purpose": "Retired worker, kept for history",
+      "billable": false,
+      "lifecycle": "deleted",
+      "origin": "created_this_run",
+      "evidence_fact": "resource.old_worker_removed"
+    }
+  ],
+  "sources": [],
+  "facts": [
+    {
+      "key": "resource.containers",
+      "label": "The three containers are listed as running",
+      "value": "api, web, worker running",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "resource",
+      "scope": "host: container list on this machine",
+      "checked_at": "2026-10-06T00:18:31Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0011-ps.txt"
+      ]
+    },
+    {
+      "key": "manifest.web_image",
+      "label": "Web image tag declared in compose.yaml",
+      "value": "1.4.2",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "source",
+      "scope": "Declared in compose.yaml (a local file); says nothing about what runs",
+      "checked_at": "2026-10-06T00:19:31Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0012-compose-file.txt"
+      ]
+    },
+    {
+      "key": "runtime.web_image",
+      "label": "Web image tag the running container uses",
+      "value": "1.4.2",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "source",
+      "scope": "web-container: observed on the running container",
+      "checked_at": "2026-10-06T00:20:31Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0013-web-inspect.txt"
+      ]
+    },
+    {
+      "key": "runtime.api_image",
+      "label": "API image tag the running container uses",
+      "value": null,
+      "status": "UNKNOWN",
+      "source": "reasoning",
+      "class": "source",
+      "scope": "api-container: only the declaration has been read so far",
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": []
+    },
+    {
+      "key": "health.api",
+      "label": "api answers its health check",
+      "value": "200 on /health",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "health",
+      "scope": "api-container: GET /health from this machine",
+      "checked_at": "2026-10-06T06:05:31Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0020-api-health.txt"
+      ]
+    },
+    {
+      "key": "health.web",
+      "label": "web answers",
+      "value": "200 on /",
+      "status": "STALE",
+      "source": "local_check",
+      "class": "health",
+      "scope": "web-container: GET / from this machine; window passed",
+      "checked_at": "2026-10-06T00:22:31Z",
+      "fresh_for_minutes": 30,
+      "evidence": [
+        "evidence/0015-web-health.txt"
+      ]
+    },
+    {
+      "key": "health.worker",
+      "label": "worker processes jobs",
+      "value": null,
+      "status": "UNKNOWN",
+      "source": "reasoning",
+      "class": "health",
+      "scope": "worker-container: running, but serving has not been checked",
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": []
+    },
+    {
+      "key": "resource.old_worker_removed",
+      "label": "The retired worker container no longer exists",
+      "value": "not found",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "resource",
+      "scope": "host: container lookup with a control",
+      "checked_at": "2026-10-06T00:23:31Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0016-old-worker-removed.txt"
+      ],
+      "negative_result": true,
+      "control": "demo-app-worker-1 is listed by the same lookup"
+    }
+  ],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "Re-check web and check that worker processes a job",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "skills/router.md",
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

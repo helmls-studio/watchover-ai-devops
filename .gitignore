@@ -1,0 +1,15 @@
+# Dependencies (none are declared; kept out defensively)
+node_modules/
+
+# Evidence holds sanitized raw output and never enters git (FT-3)
+evidence/
+
+# Tooling caches
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+
+# Local temporary run state
+.run/

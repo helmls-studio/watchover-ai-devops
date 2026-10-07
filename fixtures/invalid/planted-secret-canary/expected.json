@@ -1,0 +1,11 @@
+{
+  "reason": "A credential-shaped canary is planted in an otherwise valid event",
+  "errors": [
+    {
+      "check": "secret",
+      "file": "events.jsonl",
+      "line": 15,
+      "pattern": "aws-access-key-id"
+    }
+  ]
+}

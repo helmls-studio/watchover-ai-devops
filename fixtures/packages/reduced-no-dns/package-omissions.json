@@ -1,0 +1,5 @@
+{
+  "package": "reduced example: no DNS provider profile",
+  "omitted": ["providers/dns-cloudflare.md"],
+  "reason": "This package is for targets whose DNS is handled outside the skills; the generic rules and approvals still apply."
+}

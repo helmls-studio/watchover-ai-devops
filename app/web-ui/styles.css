@@ -1,0 +1,196 @@
+/* WatchOver view — an operations logbook: paper, ink, ruled cards.
+   Local fonts only (no network). Status is never colour alone: every badge carries a
+   symbol and words. Green means verified and still fresh, and nothing else. */
+
+:root {
+  --paper: #f5f0e6;
+  --card: #fffdf8;
+  --ink: #1f1c18;
+  --muted: #6b6358;
+  --rule: #d9cfbd;
+  --accent: #8a4b12;
+  --urgent: #b8471f;
+  --fresh: #1f7a3f;
+  --fresh-dark: #0f4f27;
+  --serif: "Iowan Old Style", "Charter", "Palatino Linotype", Palatino, Georgia, serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgba(138, 75, 18, 0.05) 27px 28px);
+  color: var(--ink);
+  font: 16px/1.5 var(--serif);
+}
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  padding: 1rem 2rem 0.75rem;
+  border-bottom: 3px double var(--ink);
+}
+.brand { font-size: 1.9rem; font-weight: 700; letter-spacing: 0.02em; }
+.tagline { color: var(--muted); font-style: italic; }
+.checked { margin-left: auto; font: 0.8rem var(--mono); color: var(--muted); }
+
+main { flex: 1; padding: 1rem 2rem 1.5rem; }
+
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  font-size: 0.95rem;
+}
+.k {
+  display: inline-block;
+  margin-right: 0.35rem;
+  font: 600 0.7rem var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.banner { padding: 0.8rem 1rem; margin-bottom: 1rem; border-left: 6px solid; background: var(--card); }
+.banner.warn { border-color: #c98a1b; background: #fbf1da; }
+.banner.error { border-color: var(--urgent); background: #fbe6dd; font-size: 1.05rem; }
+.banner.action { border-color: var(--urgent); font-size: 1.05rem; }
+.banner.calm { border-color: #6a8f6a; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr)); gap: 1rem; }
+
+.question {
+  padding: 0.9rem 1.1rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--ink);
+  min-width: 0;
+}
+.question.urgent { grid-column: 1 / -1; border: 3px solid var(--urgent); border-top-width: 8px; }
+.question h2 { margin: 0 0 0.6rem; font-size: 1.25rem; }
+.question h2 .n {
+  display: inline-block;
+  min-width: 1.6rem;
+  margin-right: 0.25rem;
+  font: 700 0.95rem var(--mono);
+  color: var(--accent);
+}
+.question h3 { margin: 1rem 0 0.4rem; font-size: 1rem; border-bottom: 1px solid var(--rule); }
+.sub { font-weight: 400; font-style: italic; color: var(--muted); font-size: 0.85rem; }
+
+dl { display: grid; grid-template-columns: minmax(8rem, 13rem) 1fr; gap: 0.3rem 1rem; margin: 0; }
+dt { color: var(--muted); font-size: 0.9rem; }
+dd { margin: 0; }
+dd ul, .question ul, .question ol { margin: 0; padding-left: 1.1rem; }
+
+.lead { font-size: 1.1rem; margin: 0 0 0.7rem; }
+.none { color: var(--muted); font-style: italic; }
+.calm { font-size: 1.05rem; margin: 0; }
+.note { margin: 0 0 0.6rem; font-size: 0.9rem; color: var(--muted); }
+.age, .who, .type, .detail { color: var(--muted); font-size: 0.9rem; }
+code, .val, .fact-val, .t { font-family: var(--mono); font-size: 0.85rem; }
+code { background: #f0e9dc; padding: 0 0.25rem; overflow-wrap: anywhere; }
+
+.flag {
+  display: inline-block;
+  padding: 0 0.4rem;
+  border: 1px solid var(--urgent);
+  color: var(--urgent);
+  font: 600 0.75rem var(--mono);
+  text-transform: uppercase;
+}
+.tag {
+  display: inline-block;
+  padding: 0 0.35rem;
+  border: 1px solid var(--ink);
+  font: 600 0.7rem var(--mono);
+  text-transform: uppercase;
+}
+.tag.muted { border-color: var(--muted); color: var(--muted); }
+
+.card .cats { margin: 0 0 0.6rem; }
+.cat {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  background: var(--urgent);
+  color: #fff;
+  font: 700 0.8rem var(--mono);
+  text-transform: uppercase;
+}
+.replies code { font-size: 1rem; font-weight: 700; }
+.where-to-reply { margin: 0.8rem 0 0; padding: 0.5rem 0.7rem; background: #fbe6dd; }
+
+.events { list-style: none; padding: 0; }
+.events li { padding: 0.15rem 0; border-bottom: 1px dotted var(--rule); }
+
+.facts { list-style: none; padding: 0 !important; }
+.fact { padding: 0.45rem 0; border-bottom: 1px dotted var(--rule); }
+.fact-meta { font-size: 0.85rem; color: var(--muted); }
+.fact-problem { border-left: 5px solid var(--urgent); padding-left: 0.65rem; background: #fbe6dd; }
+.problem-indicator { background: var(--urgent); color: #fff; font-size: 0.9rem; border-width: 2px; }
+
+.tree { list-style: none; padding-left: 1rem !important; border-left: 2px solid var(--rule); }
+.tree li { padding: 0.2rem 0; }
+.bill { font-weight: 700; color: var(--accent); }
+.provider h4 { margin: 0.4rem 0 0.2rem; font: 700 0.85rem var(--mono); text-transform: uppercase; }
+
+.scroll { overflow-x: auto; }
+.tiers { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.9rem; }
+.tiers th, .tiers td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+.tiers thead th { font: 600 0.72rem var(--mono); text-transform: uppercase; color: var(--muted); }
+.tiers tr.selected { background: #f4ecd9; }
+
+/* Status badges: symbol + words + colour. Green only for verified and fresh. */
+.badge {
+  display: inline-block;
+  padding: 0 0.45rem;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  font: 600 0.78rem/1.6 var(--mono);
+  white-space: nowrap;
+}
+.badge .sym { font-weight: 700; }
+.badge[data-kind="verified-local"] { background: var(--fresh); color: #fff; border-style: solid; border-color: var(--fresh-dark); }
+.badge[data-kind="verified-remote"] { background: var(--fresh); color: #fff; border-style: double; border-width: 4px; border-color: var(--fresh-dark); }
+.badge[data-kind="verified-future"] { background: #f4dcd3; color: var(--urgent); border-style: dotted; border-color: var(--urgent); }
+.badge[data-kind="verified-expired"] { background: #d9d3c0; color: var(--ink); border-style: dashed; border-color: #8a8270; }
+.badge[data-kind="stale"] { background: #e8b04b; color: var(--ink); border-style: solid; border-color: #a8761c; }
+.badge[data-kind="unknown"] { background: #ffffff; color: #4a4540; border-style: dotted; border-color: #6b6358; }
+.badge[data-kind="blocked"] { background: #a8382c; color: #fff; border-style: solid; border-color: #6e2018; }
+.badge[data-kind="assumed"] { background: #ddd3ef; color: #3b2d63; border-style: dashed; border-color: #6d5ba3; }
+.badge[data-kind="user-confirmed"] { background: #cfe0f3; color: #173a61; border-style: solid; border-color: #4b77a8; }
+.badge[data-kind="unrecognised"] { background: #ffffff; color: var(--urgent); border-style: solid; border-color: var(--urgent); }
+.badge[data-kind="unverified"] { background: transparent; color: var(--muted); border-style: dashed; border-color: var(--rule); }
+/* A problematic observation keeps its verification kind, without a green fill. */
+.fact-problem .badge[data-kind="verified-local"],
+.fact-problem .badge[data-kind="verified-remote"] { background: transparent; color: var(--ink); border-color: var(--muted); }
+
+/* Sticky at the end of the page: always in view while scrolling, and a full-page
+   screenshot shows it once, at the bottom, instead of over the content. */
+footer {
+  position: sticky;
+  bottom: 0;
+  padding: 0.6rem 2rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9rem;
+}
+footer p { margin: 0; }
+
+@media (max-width: 40rem) {
+  main, .masthead { padding-left: 1rem; padding-right: 1rem; }
+  .grid { grid-template-columns: 1fr; }
+  dl { grid-template-columns: 1fr; }
+  .checked { margin-left: 0; }
+}

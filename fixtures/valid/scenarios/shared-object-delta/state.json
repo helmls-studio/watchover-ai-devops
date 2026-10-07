@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial target",
+    "provider_profile": "local",
+    "mode": "basic",
+    "updated_at": "2026-10-06T06:24:12Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "ai-deployer"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "executing",
+  "activity": {
+    "summary": "Workspace initialized; recon has not started yet",
+    "started_at": "2026-10-06T00:24:12Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "human",
+    "last_progress": null
+  },
+  "brief": {
+    "app_summary": "demo-app: an API and a web front end",
+    "components": [
+      {
+        "name": "api",
+        "role": "HTTP API"
+      },
+      {
+        "name": "web",
+        "role": "Front end"
+      }
+    ],
+    "topology": "Two containers on this machine",
+    "resource_rationale": "One machine is enough for a single tester",
+    "heavier_alternatives": [
+      {
+        "alternative": "An orchestration cluster",
+        "why_unnecessary": "Two containers need no scheduler"
+      }
+    ],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "local",
+        "name": "Local containers",
+        "composition": "api and web containers",
+        "region": "this machine",
+        "cost_range": {
+          "low": 0,
+          "high": 0,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": null,
+        "load_assumption": "One tester",
+        "uncertainty": "Runs on this machine at no cloud cost"
+      }
+    ],
+    "default_tier": "local",
+    "selected_tier": "local"
+  },
+  "pending_decision": null,
+  "resources": [],
+  "sources": [],
+  "facts": [
+    {
+      "key": "shared.metadata.baseline",
+      "label": "Shared metadata before this run (stable form, sha256)",
+      "value": "a955babb55debef025ff39129f4e1d19ede2ed61a615e1a3fcd9ce2b5cd7d3b4",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "resource",
+      "scope": "shared metadata: 1 pre-existing key",
+      "checked_at": "2026-10-06T00:34:12Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0010-shared-before.json"
+      ]
+    },
+    {
+      "key": "shared.metadata.restored",
+      "label": "Shared metadata after removing only this run's delta (sha256)",
+      "value": "a955babb55debef025ff39129f4e1d19ede2ed61a615e1a3fcd9ce2b5cd7d3b4",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "resource",
+      "scope": "shared metadata: 8 run keys removed under dec-02, original key kept",
+      "checked_at": "2026-10-06T00:46:12Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0012-shared-after.json"
+      ]
+    },
+    {
+      "key": "shared.access_policy.preserved",
+      "label": "The shared access policy kept its original content",
+      "value": null,
+      "status": "UNKNOWN",
+      "source": "reasoning",
+      "class": "permission",
+      "scope": "shared access policy: no baseline was readable, so preservation cannot be proven",
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": []
+    }
+  ],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "Ask the human how to establish the access policy baseline; do not claim it is clean",
+    "decision_owner": "human"
+  },
+  "handoff": {
+    "read_first": [
+      "skills/router.md",
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

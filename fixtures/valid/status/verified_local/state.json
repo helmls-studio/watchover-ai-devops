@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial on GCP",
+    "provider_profile": "gcp",
+    "mode": "basic",
+    "updated_at": "2026-09-01T09:06:00Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "deployer-ai"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "recon",
+  "activity": {
+    "summary": "Recon: this example holds one VERIFIED_LOCAL fact",
+    "started_at": "2026-09-01T09:00:00Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "ai",
+    "last_progress": null
+  },
+  "brief": {
+    "app_summary": null,
+    "components": [],
+    "topology": null,
+    "resource_rationale": null,
+    "heavier_alternatives": [],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [],
+    "default_tier": null,
+    "selected_tier": null
+  },
+  "pending_decision": null,
+  "resources": [],
+  "sources": [],
+  "facts": [
+    {
+      "checked_at": "2026-09-01T09:05:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0004-git-status.txt"
+      ],
+      "key": "source.local_changes",
+      "label": "Uncommitted changes in the demo-app checkout",
+      "value": "none found",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "source",
+      "scope": "Working tree of the local demo-app checkout, tracked and untracked files",
+      "control": "The same git status command reported a planted scratch file before it was removed",
+      "negative_result": true
+    }
+  ],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "Continue recon",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "state.json"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

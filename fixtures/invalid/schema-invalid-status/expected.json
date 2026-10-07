@@ -1,0 +1,11 @@
+{
+  "reason": "A fact uses a status outside the seven FT-7 values",
+  "errors": [
+    {
+      "check": "schema",
+      "file": "state.json",
+      "keyword": "enum",
+      "pointer": "/facts/0/status"
+    }
+  ]
+}

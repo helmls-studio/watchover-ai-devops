@@ -1,0 +1,468 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial on GCP",
+    "provider_profile": "gcp",
+    "mode": "basic",
+    "updated_at": "2026-09-01T10:10:00Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "deployer-ai"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "verifying",
+  "activity": {
+    "summary": "Verification complete: containers, web, chain and deployed revision all checked",
+    "started_at": "2026-09-01T10:06:00Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "none",
+    "last_progress": {
+      "at": "2026-09-01T10:09:00Z",
+      "summary": "Deployed revision matches v1.4.2"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: a small web app with a web front end, an HTTP API and a PostgreSQL database, packaged as a Docker Compose project.",
+    "components": [
+      {
+        "name": "web",
+        "role": "Serves the front end and forwards /api requests to the api service"
+      },
+      {
+        "name": "api",
+        "role": "HTTP API that reads and writes items in the database"
+      },
+      {
+        "name": "db",
+        "role": "PostgreSQL 16 with one data volume"
+      }
+    ],
+    "topology": "One VM runs all three containers with Docker Compose. Only the web container is exposed, on port 80; api and db stay internal.",
+    "resource_rationale": "Three small containers with low expected traffic fit on one small VM. A single VM keeps cost and moving parts low and is easy to tear down.",
+    "heavier_alternatives": [
+      {
+        "alternative": "Managed Kubernetes cluster",
+        "why_unnecessary": "Three containers on one host need no scheduler or node pool."
+      },
+      {
+        "alternative": "Managed database service",
+        "why_unnecessary": "The data set is small and a trial run does not need managed backups; tier C is offered if wanted."
+      },
+      {
+        "alternative": "Load balancer",
+        "why_unnecessary": "One VM serves the expected traffic directly."
+      }
+    ],
+    "assumptions": [
+      "Expected traffic is under 50 requests per minute (not confirmed by the operator)",
+      "No public DNS name is needed for this run"
+    ]
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "a",
+        "name": "Small single VM",
+        "composition": "1 × e2-small VM (2 shared vCPU, 2 GB), 30 GB balanced disk, ephemeral IP",
+        "region": "us-central1",
+        "cost_range": {
+          "low": 15,
+          "high": 22,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": "2026-09-01T09:19:00Z",
+        "load_assumption": "Up to about 20 requests per minute",
+        "uncertainty": "2 GB of memory may be tight during the first image build"
+      },
+      {
+        "id": "b",
+        "name": "Medium single VM",
+        "composition": "1 × e2-medium VM (2 shared vCPU, 4 GB), 30 GB balanced disk, ephemeral IP",
+        "region": "us-central1",
+        "cost_range": {
+          "low": 28,
+          "high": 36,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": "2026-09-01T09:19:00Z",
+        "load_assumption": "Up to about 100 requests per minute",
+        "uncertainty": "Price range excludes network egress"
+      },
+      {
+        "id": "c",
+        "name": "VM with managed database",
+        "composition": "1 × e2-small VM plus the smallest shared-core managed PostgreSQL instance",
+        "region": "us-central1",
+        "cost_range": {
+          "low": 35,
+          "high": 50,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": "2026-09-01T09:19:00Z",
+        "load_assumption": "Up to about 20 requests per minute",
+        "uncertainty": "Managed database adds a second billable service and a connection setup step"
+      }
+    ],
+    "default_tier": "b",
+    "selected_tier": "b"
+  },
+  "pending_decision": null,
+  "resources": [
+    {
+      "parent_id": null,
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "pre_existing",
+      "evidence_fact": "gcp.default_network",
+      "id": "net-default",
+      "type": "compute.network",
+      "name": "default",
+      "purpose": "Existing network the VM joins"
+    },
+    {
+      "parent_id": null,
+      "provider": "gcp",
+      "billable": true,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "compute.vm_exists",
+      "id": "vm-demo-app",
+      "type": "compute.instance",
+      "name": "demo-app-vm",
+      "purpose": "Runs the web, api and db containers"
+    },
+    {
+      "parent_id": "vm-demo-app",
+      "provider": "gcp",
+      "billable": true,
+      "lifecycle": "present",
+      "origin": "created_implicitly",
+      "evidence_fact": "compute.vm_exists",
+      "id": "disk-demo-app-boot",
+      "type": "compute.disk",
+      "name": "demo-app-vm boot disk (30 GB)",
+      "purpose": "Boot disk; also holds the database volume"
+    },
+    {
+      "parent_id": "vm-demo-app",
+      "provider": "gcp",
+      "billable": true,
+      "lifecycle": "present",
+      "origin": "created_implicitly",
+      "evidence_fact": "compute.vm_exists",
+      "id": "ip-demo-app",
+      "type": "compute.address (ephemeral)",
+      "name": "demo-app-vm external IP",
+      "purpose": "Lets the operator reach the web container"
+    },
+    {
+      "parent_id": null,
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "compute.firewall_rule",
+      "id": "fw-demo-app-http",
+      "type": "compute.firewall-rule",
+      "name": "demo-app-allow-http",
+      "purpose": "Allows HTTP on port 80 to the VM"
+    },
+    {
+      "parent_id": "vm-demo-app",
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "compute.containers_running",
+      "id": "ctr-web",
+      "type": "container",
+      "name": "web",
+      "purpose": "Front end on port 80"
+    },
+    {
+      "parent_id": "vm-demo-app",
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "compute.containers_running",
+      "id": "ctr-api",
+      "type": "container",
+      "name": "api",
+      "purpose": "HTTP API, internal only"
+    },
+    {
+      "parent_id": "vm-demo-app",
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "created_this_run",
+      "evidence_fact": "compute.containers_running",
+      "id": "ctr-db",
+      "type": "container",
+      "name": "db",
+      "purpose": "PostgreSQL, internal only"
+    }
+  ],
+  "sources": [
+    {
+      "name": "demo-app",
+      "remote": "https://git.example.com/demo/demo-app.git",
+      "pinned_ref": "v1.4.2 (3f2c9ab)",
+      "local_changes_fact": "source.local_changes",
+      "local_changes_summary": "No uncommitted changes",
+      "deployed_ref_fact": "source.deployed_ref"
+    }
+  ],
+  "facts": [
+    {
+      "checked_at": "2026-09-01T09:04:00Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0002-gcloud-config.txt"
+      ],
+      "key": "gcp.project",
+      "label": "Target cloud project",
+      "value": "demo-cloud-project",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "identity",
+      "scope": "Active gcloud configuration on the deployer host"
+    },
+    {
+      "checked_at": "2026-09-01T09:04:00Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0002-gcloud-config.txt"
+      ],
+      "key": "gcp.account",
+      "label": "Active cloud account",
+      "value": "deployer@example.com",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "identity",
+      "scope": "Active gcloud configuration on the deployer host"
+    },
+    {
+      "checked_at": "2026-09-01T09:06:00Z",
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.billing_enabled",
+      "label": "Billing is enabled on the project",
+      "value": true,
+      "status": "USER_CONFIRMED",
+      "source": "human",
+      "class": "identity",
+      "scope": "Stated by the operator; not checked technically"
+    },
+    {
+      "checked_at": "2026-09-01T09:08:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0004-git-status.txt"
+      ],
+      "key": "source.local_changes",
+      "label": "Uncommitted changes in the demo-app checkout",
+      "value": "none found",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "source",
+      "scope": "Working tree of the local demo-app checkout, tracked and untracked files",
+      "control": "The same git status command reported a planted scratch file before it was removed",
+      "negative_result": true
+    },
+    {
+      "checked_at": "2026-09-01T09:09:00Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0005-networks.txt"
+      ],
+      "key": "gcp.default_network",
+      "label": "Default VPC network exists",
+      "value": "default",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "network",
+      "scope": "Project demo-cloud-project"
+    },
+    {
+      "checked_at": "2026-09-01T09:14:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0006-iam-roles.txt"
+      ],
+      "key": "gcp.permissions",
+      "label": "Account can create compute resources",
+      "value": "roles/compute.admin granted",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "permission",
+      "scope": "IAM roles of the active account on demo-cloud-project"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.cpu_quota",
+      "label": "Regional CPU quota is sufficient",
+      "value": null,
+      "status": "BLOCKED",
+      "source": "remote_observation",
+      "class": "resource",
+      "scope": "CPU quota in us-central1 for demo-cloud-project",
+      "blocked_by": "The Service Usage API is not enabled on the project, so quotas cannot be read"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "app.expected_load",
+      "label": "Expected traffic",
+      "value": "Under 50 requests per minute",
+      "status": "ASSUMED",
+      "source": "reasoning",
+      "class": "other",
+      "scope": "Inferred from the demo-app README; not stated by the operator"
+    },
+    {
+      "checked_at": "2026-09-01T10:09:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0032-deployed-ref.txt"
+      ],
+      "key": "source.deployed_ref",
+      "label": "Source revision running on the target",
+      "value": "3f2c9ab (matches pin v1.4.2)",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "source",
+      "scope": "Image labels of the running web, api and db containers on demo-app-vm"
+    },
+    {
+      "checked_at": "2026-09-01T09:35:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0013-instance-create.txt"
+      ],
+      "key": "compute.vm_exists",
+      "label": "demo-app-vm exists and is running",
+      "value": "RUNNING",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "resource",
+      "scope": "Zone us-central1-a, project demo-cloud-project"
+    },
+    {
+      "checked_at": "2026-09-01T09:37:00Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0016-firewall-create.txt"
+      ],
+      "key": "compute.firewall_rule",
+      "label": "Firewall rule demo-app-allow-http exists",
+      "value": "tcp:80 to tag demo-app-http",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "network",
+      "scope": "Network default, project demo-cloud-project"
+    },
+    {
+      "checked_at": "2026-09-01T10:07:00Z",
+      "fresh_for_minutes": 15,
+      "evidence": [
+        "evidence/0030-web-health.txt"
+      ],
+      "key": "app.web_health",
+      "label": "Web health endpoint answers",
+      "value": "HTTP 200 from /healthz",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "health",
+      "scope": "http://<vm-ip>/healthz from the deployer host"
+    },
+    {
+      "checked_at": "2026-09-01T10:04:00Z",
+      "fresh_for_minutes": 15,
+      "evidence": [
+        "evidence/0028-chain-check.txt"
+      ],
+      "key": "app.chain",
+      "label": "Web → api → db chain returns data",
+      "value": "HTTP 200 with 3 items",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "health",
+      "scope": "http://<vm-ip>/api/items from the deployer host"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [
+        "evidence/0024-api-logs.txt"
+      ],
+      "key": "diagnosis.api_start_order",
+      "label": "Likely cause of the 502",
+      "value": "api started before db accepted connections and does not retry",
+      "status": "ASSUMED",
+      "source": "reasoning",
+      "class": "other",
+      "scope": "Inferred from the api container logs; not proven"
+    },
+    {
+      "checked_at": "2026-09-01T10:08:00Z",
+      "fresh_for_minutes": 15,
+      "evidence": [
+        "evidence/0031-docker-ps.txt"
+      ],
+      "key": "compute.containers_running",
+      "label": "web, api and db containers are running",
+      "value": "web, api, db: running",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "health",
+      "scope": "docker compose ps on demo-app-vm"
+    }
+  ],
+  "secrets": [
+    {
+      "name": "DB_PASSWORD",
+      "location": "GCP Secret Manager secret demo-app-db-password",
+      "last_verified_at": "2026-09-01T09:09:00Z",
+      "availability": "usable"
+    },
+    {
+      "name": "APP_SESSION_KEY",
+      "location": "Operator's local .env file (not committed)",
+      "last_verified_at": "2026-09-01T09:18:00Z",
+      "availability": "usable"
+    }
+  ],
+  "open_items": [
+    {
+      "text": "CPU quota cannot be read until the Service Usage API is enabled",
+      "owner": "human",
+      "blocking": false
+    }
+  ],
+  "next": {
+    "action": "Write the handoff record",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

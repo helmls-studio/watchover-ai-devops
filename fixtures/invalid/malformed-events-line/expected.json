@@ -1,0 +1,10 @@
+{
+  "reason": "events.jsonl line 3 is cut off",
+  "errors": [
+    {
+      "check": "json",
+      "file": "events.jsonl",
+      "line": 3
+    }
+  ]
+}

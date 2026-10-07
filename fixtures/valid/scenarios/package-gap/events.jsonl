@@ -1,0 +1,2 @@
+{"schema_version":"0.1","id":"evt-0001","at":"2026-10-06T00:24:12Z","actor":{"role":"ai","name":"ai-deployer"},"session_id":"session-a","type":"stage_change","summary":"Workspace initialized; starting read-only recon","stage":{"from":null,"to":"recon"}}
+{"schema_version":"0.1","id":"evt-0002","at":"2026-10-06T00:25:12Z","actor":{"role":"ai","name":"ai-deployer"},"session_id":"session-a","type":"stage_change","summary":"Recon finished; preparing the plan","stage":{"from":"recon","to":"plan"}}

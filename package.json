@@ -1,0 +1,14 @@
+{
+  "name": "watchover-ai-devops",
+  "version": "0.1.2",
+  "description": "A local, read-only workbench that keeps a human and an AI deployer on one freshness-honest record of a deployment.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.mjs\""
+  }
+}

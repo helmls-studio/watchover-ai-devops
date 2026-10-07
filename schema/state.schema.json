@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:watchover:schema:state:0.1",
+  "title": "WatchOver current state",
+  "description": "The only current-state source of truth. Bounded and overwritten in place; history lives in events.jsonl.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "identity", "stage", "activity", "brief", "plan", "pending_decision", "resources", "sources", "facts", "secrets", "open_items", "next", "handoff"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_alias", "target_environment", "provider_profile", "mode", "updated_at", "updated_by", "session_id"],
+      "properties": {
+        "project_alias": { "$ref": "#/$defs/id" },
+        "target_environment": { "$ref": "#/$defs/short" },
+        "provider_profile": { "$ref": "#/$defs/id" },
+        "mode": { "enum": ["basic"], "description": "Guarded mode is deferred; only basic exists in v0.1a." },
+        "updated_at": { "$ref": "#/$defs/timestamp" },
+        "updated_by": { "$ref": "#/$defs/actor" },
+        "session_id": { "$ref": "#/$defs/id" }
+      }
+    },
+    "stage": { "$ref": "#/$defs/stage" },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "started_at", "expected_duration", "slow_reason", "waiting_on", "last_progress"],
+      "properties": {
+        "summary": { "$ref": "#/$defs/text" },
+        "started_at": { "$ref": "#/$defs/optionalTimestamp" },
+        "expected_duration": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["min_minutes", "max_minutes"],
+          "properties": {
+            "min_minutes": { "type": "integer", "minimum": 0, "maximum": 10080 },
+            "max_minutes": { "type": "integer", "minimum": 0, "maximum": 10080 }
+          }
+        },
+        "slow_reason": { "$ref": "#/$defs/optionalText" },
+        "waiting_on": { "$ref": "#/$defs/party" },
+        "last_progress": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["at", "summary"],
+          "properties": {
+            "at": { "$ref": "#/$defs/timestamp" },
+            "summary": { "$ref": "#/$defs/text" }
+          }
+        }
+      }
+    },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["app_summary", "components", "topology", "resource_rationale", "heavier_alternatives", "assumptions"],
+      "properties": {
+        "app_summary": { "$ref": "#/$defs/optionalText" },
+        "components": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "role"],
+            "properties": {
+              "name": { "$ref": "#/$defs/id" },
+              "role": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "topology": { "$ref": "#/$defs/optionalText" },
+        "resource_rationale": { "$ref": "#/$defs/optionalText" },
+        "heavier_alternatives": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["alternative", "why_unnecessary"],
+            "properties": {
+              "alternative": { "$ref": "#/$defs/short" },
+              "why_unnecessary": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "assumptions": { "type": "array", "maxItems": 20, "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tiers", "default_tier", "selected_tier"],
+      "properties": {
+        "tiers": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "composition", "region", "cost_range", "price_checked_at", "load_assumption", "uncertainty"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "$ref": "#/$defs/short" },
+              "composition": { "$ref": "#/$defs/text" },
+              "region": { "$ref": "#/$defs/short" },
+              "cost_range": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["low", "high", "currency", "period"],
+                "properties": {
+                  "low": { "type": "number", "minimum": 0, "maximum": 1000000 },
+                  "high": { "type": "number", "minimum": 0, "maximum": 1000000 },
+                  "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+                  "period": { "enum": ["hour", "month"] }
+                }
+              },
+              "price_checked_at": { "$ref": "#/$defs/optionalTimestamp" },
+              "load_assumption": { "$ref": "#/$defs/text" },
+              "uncertainty": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "default_tier": { "$ref": "#/$defs/optionalId" },
+        "selected_tier": { "$ref": "#/$defs/optionalId" }
+      }
+    },
+    "pending_decision": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["id", "categories", "action", "targets", "why", "cost_or_blast_radius", "reversibility", "rollback", "success_check", "reply_options", "requested_at"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "categories": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/gate" } },
+        "action": { "$ref": "#/$defs/text" },
+        "targets": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "#/$defs/short" } },
+        "why": { "$ref": "#/$defs/text" },
+        "cost_or_blast_radius": { "$ref": "#/$defs/text" },
+        "reversibility": { "$ref": "#/$defs/text" },
+        "rollback": { "$ref": "#/$defs/text" },
+        "success_check": { "$ref": "#/$defs/text" },
+        "reply_options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["reply", "meaning"],
+            "properties": {
+              "reply": { "$ref": "#/$defs/short" },
+              "meaning": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "requested_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "parent_id", "provider", "type", "name", "purpose", "billable", "lifecycle", "origin", "evidence_fact"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "parent_id": { "$ref": "#/$defs/optionalId" },
+          "provider": { "$ref": "#/$defs/id" },
+          "type": { "$ref": "#/$defs/short" },
+          "name": { "$ref": "#/$defs/short" },
+          "purpose": { "$ref": "#/$defs/text" },
+          "billable": { "type": "boolean" },
+          "lifecycle": { "enum": ["planned", "creating", "present", "failed", "deleting", "deleted"] },
+          "origin": { "enum": ["created_this_run", "created_implicitly", "pre_existing"] },
+          "evidence_fact": { "$ref": "#/$defs/optionalFactKey" }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "remote", "pinned_ref", "local_changes_fact", "local_changes_summary", "deployed_ref_fact"],
+        "properties": {
+          "name": { "$ref": "#/$defs/id" },
+          "remote": { "$ref": "#/$defs/short" },
+          "pinned_ref": { "$ref": "#/$defs/short" },
+          "local_changes_fact": { "$ref": "#/$defs/optionalFactKey" },
+          "local_changes_summary": { "$ref": "#/$defs/optionalText" },
+          "deployed_ref_fact": { "$ref": "#/$defs/optionalFactKey" }
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "label", "value", "status", "source", "class", "scope", "checked_at", "fresh_for_minutes", "evidence"],
+        "properties": {
+          "key": { "$ref": "#/$defs/factKey" },
+          "label": { "$ref": "#/$defs/short" },
+          "value": { "type": ["string", "number", "boolean", "null"], "maxLength": 300, "minimum": -1000000000000, "maximum": 1000000000000 },
+          "status": { "$ref": "#/$defs/status" },
+          "source": { "enum": ["human", "local_check", "remote_observation", "reasoning"] },
+          "class": { "enum": ["identity", "permission", "resource", "health", "source", "price", "network", "other"] },
+          "scope": { "$ref": "#/$defs/text" },
+          "checked_at": { "$ref": "#/$defs/optionalTimestamp" },
+          "fresh_for_minutes": { "type": ["integer", "null"], "minimum": 1, "maximum": 43200 },
+          "evidence": { "$ref": "#/$defs/evidenceList" },
+          "control": { "$ref": "#/$defs/optionalText" },
+          "negative_result": { "type": "boolean" },
+          "problem": { "type": "boolean" },
+          "blocked_by": { "$ref": "#/$defs/optionalText" }
+        }
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "location", "last_verified_at", "availability"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$", "maxLength": 80 },
+          "location": { "$ref": "#/$defs/short" },
+          "last_verified_at": { "$ref": "#/$defs/optionalTimestamp" },
+          "availability": { "enum": ["usable", "blocked", "missing"] }
+        }
+      }
+    },
+    "open_items": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "owner", "blocking"],
+        "properties": {
+          "text": { "$ref": "#/$defs/text" },
+          "owner": { "$ref": "#/$defs/party" },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    },
+    "next": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "decision_owner"],
+      "properties": {
+        "action": { "$ref": "#/$defs/text" },
+        "decision_owner": { "$ref": "#/$defs/party" }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read_first", "last_safe_state", "rollback_anchor", "known_unverified", "fragile"],
+      "properties": {
+        "read_first": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/short" } },
+        "last_safe_state": { "$ref": "#/$defs/optionalText" },
+        "rollback_anchor": { "$ref": "#/$defs/optionalText" },
+        "known_unverified": { "type": "array", "maxItems": 20, "items": { "$ref": "#/$defs/text" } },
+        "fragile": { "type": "array", "maxItems": 20, "items": { "$ref": "#/$defs/text" } }
+      }
+    }
+  },
+  "$defs": {
+    "status": { "enum": ["ASSUMED", "USER_CONFIRMED", "VERIFIED_LOCAL", "VERIFIED_REMOTE", "STALE", "UNKNOWN", "BLOCKED"] },
+    "stage": { "enum": ["recon", "plan", "awaiting_decision", "executing", "verifying", "handoff", "incident", "recovered", "teardown", "closed"] },
+    "gate": { "enum": ["plan_acceptance", "billable", "dns", "delete", "destructive", "external_release"] },
+    "party": { "enum": ["ai", "human", "external", "none"] },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "name"],
+      "properties": {
+        "role": { "enum": ["ai", "human", "tool"] },
+        "name": { "$ref": "#/$defs/id" }
+      }
+    },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$", "maxLength": 80 },
+    "optionalId": { "type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9._-]*$", "maxLength": 80 },
+    "factKey": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$", "maxLength": 120 },
+    "optionalFactKey": { "type": ["string", "null"], "pattern": "^[a-z0-9][a-z0-9._-]*$", "maxLength": 120 },
+    "short": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "text": { "type": "string", "minLength": 1, "maxLength": 600 },
+    "optionalText": { "type": ["string", "null"], "minLength": 1, "maxLength": 600 },
+    "timestamp": { "type": "string", "format": "date-time", "maxLength": 35 },
+    "optionalTimestamp": { "type": ["string", "null"], "format": "date-time", "maxLength": 35 },
+    "evidenceList": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "pattern": "^evidence/(?!.*\\.\\.)[A-Za-z0-9._/-]+$", "maxLength": 200 }
+    }
+  }
+}

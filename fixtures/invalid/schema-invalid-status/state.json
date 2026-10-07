@@ -1,0 +1,244 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial on GCP",
+    "provider_profile": "gcp",
+    "mode": "basic",
+    "updated_at": "2026-09-01T09:10:00Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "deployer-ai"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "recon",
+  "activity": {
+    "summary": "Reading the repository and checking the cloud account (read-only)",
+    "started_at": "2026-09-01T09:00:00Z",
+    "expected_duration": {
+      "min_minutes": 10,
+      "max_minutes": 20
+    },
+    "slow_reason": null,
+    "waiting_on": "ai",
+    "last_progress": {
+      "at": "2026-09-01T09:09:00Z",
+      "summary": "Project, account, source and network checked"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: a small web app with a web front end, an HTTP API and a PostgreSQL database, packaged as a Docker Compose project.",
+    "components": [
+      {
+        "name": "web",
+        "role": "Serves the front end and forwards /api requests to the api service"
+      },
+      {
+        "name": "api",
+        "role": "HTTP API that reads and writes items in the database"
+      },
+      {
+        "name": "db",
+        "role": "PostgreSQL 16 with one data volume"
+      }
+    ],
+    "topology": null,
+    "resource_rationale": null,
+    "heavier_alternatives": [],
+    "assumptions": [
+      "Expected traffic is under 50 requests per minute (not confirmed by the operator)"
+    ]
+  },
+  "plan": {
+    "tiers": [],
+    "default_tier": null,
+    "selected_tier": null
+  },
+  "pending_decision": null,
+  "resources": [
+    {
+      "parent_id": null,
+      "provider": "gcp",
+      "billable": false,
+      "lifecycle": "present",
+      "origin": "pre_existing",
+      "evidence_fact": "gcp.default_network",
+      "id": "net-default",
+      "type": "compute.network",
+      "name": "default",
+      "purpose": "Existing network the VM joins"
+    }
+  ],
+  "sources": [
+    {
+      "name": "demo-app",
+      "remote": "https://git.example.com/demo/demo-app.git",
+      "pinned_ref": "v1.4.2 (3f2c9ab)",
+      "local_changes_fact": "source.local_changes",
+      "local_changes_summary": "No uncommitted changes",
+      "deployed_ref_fact": "source.deployed_ref"
+    }
+  ],
+  "facts": [
+    {
+      "checked_at": "2026-09-01T09:04:00Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0002-gcloud-config.txt"
+      ],
+      "key": "gcp.project",
+      "label": "Target cloud project",
+      "value": "demo-cloud-project",
+      "status": "VERIFIED",
+      "source": "remote_observation",
+      "class": "identity",
+      "scope": "Active gcloud configuration on the deployer host"
+    },
+    {
+      "checked_at": "2026-09-01T09:04:00Z",
+      "fresh_for_minutes": 1440,
+      "evidence": [
+        "evidence/0002-gcloud-config.txt"
+      ],
+      "key": "gcp.account",
+      "label": "Active cloud account",
+      "value": "deployer@example.com",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "identity",
+      "scope": "Active gcloud configuration on the deployer host"
+    },
+    {
+      "checked_at": "2026-09-01T09:06:00Z",
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.billing_enabled",
+      "label": "Billing is enabled on the project",
+      "value": true,
+      "status": "USER_CONFIRMED",
+      "source": "human",
+      "class": "identity",
+      "scope": "Stated by the operator; not checked technically"
+    },
+    {
+      "checked_at": "2026-09-01T09:08:00Z",
+      "fresh_for_minutes": 60,
+      "evidence": [
+        "evidence/0004-git-status.txt"
+      ],
+      "key": "source.local_changes",
+      "label": "Uncommitted changes in the demo-app checkout",
+      "value": "none found",
+      "status": "VERIFIED_LOCAL",
+      "source": "local_check",
+      "class": "source",
+      "scope": "Working tree of the local demo-app checkout, tracked and untracked files",
+      "control": "The same git status command reported a planted scratch file before it was removed",
+      "negative_result": true
+    },
+    {
+      "checked_at": "2026-09-01T09:09:00Z",
+      "fresh_for_minutes": 240,
+      "evidence": [
+        "evidence/0005-networks.txt"
+      ],
+      "key": "gcp.default_network",
+      "label": "Default VPC network exists",
+      "value": "default",
+      "status": "VERIFIED_REMOTE",
+      "source": "remote_observation",
+      "class": "network",
+      "scope": "Project demo-cloud-project"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.permissions",
+      "label": "Account can create compute resources",
+      "value": null,
+      "status": "UNKNOWN",
+      "source": "reasoning",
+      "class": "permission",
+      "scope": "IAM roles of the active account on demo-cloud-project; not yet checked"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.cpu_quota",
+      "label": "Regional CPU quota is sufficient",
+      "value": null,
+      "status": "BLOCKED",
+      "source": "remote_observation",
+      "class": "resource",
+      "scope": "CPU quota in us-central1 for demo-cloud-project",
+      "blocked_by": "The Service Usage API is not enabled on the project, so quotas cannot be read"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "app.expected_load",
+      "label": "Expected traffic",
+      "value": "Under 50 requests per minute",
+      "status": "ASSUMED",
+      "source": "reasoning",
+      "class": "other",
+      "scope": "Inferred from the demo-app README; not stated by the operator"
+    },
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "source.deployed_ref",
+      "label": "Source revision running on the target",
+      "value": null,
+      "status": "UNKNOWN",
+      "source": "reasoning",
+      "class": "source",
+      "scope": "Nothing is deployed yet"
+    }
+  ],
+  "secrets": [
+    {
+      "name": "DB_PASSWORD",
+      "location": "GCP Secret Manager secret demo-app-db-password",
+      "last_verified_at": "2026-09-01T09:09:00Z",
+      "availability": "usable"
+    },
+    {
+      "name": "APP_SESSION_KEY",
+      "location": "Operator's local .env file (not committed)",
+      "last_verified_at": null,
+      "availability": "missing"
+    }
+  ],
+  "open_items": [
+    {
+      "text": "Operator to provide APP_SESSION_KEY in the local .env file",
+      "owner": "human",
+      "blocking": true
+    },
+    {
+      "text": "CPU quota cannot be read until the Service Usage API is enabled",
+      "owner": "human",
+      "blocking": false
+    }
+  ],
+  "next": {
+    "action": "Check IAM permissions, then prepare plan tiers",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

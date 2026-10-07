@@ -1,0 +1,11 @@
+{
+  "reason": "A secret entry carries a value field; secrets hold names and locations only",
+  "errors": [
+    {
+      "check": "schema",
+      "file": "state.json",
+      "keyword": "additionalProperties",
+      "pointer": "/secrets/0/value"
+    }
+  ]
+}

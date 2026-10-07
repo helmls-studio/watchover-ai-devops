@@ -1,0 +1,9 @@
+{
+  "reason": "state.json is cut off mid-object",
+  "errors": [
+    {
+      "check": "json",
+      "file": "state.json"
+    }
+  ]
+}

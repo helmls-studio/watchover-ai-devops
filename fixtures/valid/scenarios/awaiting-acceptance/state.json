@@ -1,0 +1,103 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial target",
+    "provider_profile": "local",
+    "mode": "basic",
+    "updated_at": "2026-10-06T06:05:31Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "ai-deployer"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "handoff",
+  "activity": {
+    "summary": "Deployed and running; waiting for the human to accept it",
+    "started_at": "2026-10-06T00:35:31Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "human",
+    "last_progress": {
+      "at": "2026-10-06T00:35:31Z",
+      "summary": "Handoff written"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: an API, a web front end and a background worker",
+    "components": [
+      {
+        "name": "api",
+        "role": "HTTP API"
+      },
+      {
+        "name": "web",
+        "role": "Front end"
+      },
+      {
+        "name": "worker",
+        "role": "Background jobs"
+      }
+    ],
+    "topology": "Three containers on this machine; web is exposed on a local port",
+    "resource_rationale": "One machine is enough for a single tester",
+    "heavier_alternatives": [
+      {
+        "alternative": "An orchestration cluster",
+        "why_unnecessary": "Three containers on one machine need no scheduler"
+      }
+    ],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "local",
+        "name": "Local containers",
+        "composition": "api, web and worker containers",
+        "region": "this machine",
+        "cost_range": {
+          "low": 0,
+          "high": 0,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": null,
+        "load_assumption": "One tester",
+        "uncertainty": "Runs on this machine at no cloud cost"
+      }
+    ],
+    "default_tier": "local",
+    "selected_tier": "local"
+  },
+  "pending_decision": null,
+  "resources": [],
+  "sources": [],
+  "facts": [],
+  "secrets": [],
+  "open_items": [
+    {
+      "text": "Cleanup is not approved yet; everything created in this run is still running",
+      "owner": "human",
+      "blocking": false
+    }
+  ],
+  "next": {
+    "action": "Human: accept the deployment and say whether to keep it running or approve cleanup",
+    "decision_owner": "human"
+  },
+  "handoff": {
+    "read_first": [
+      "skills/router.md",
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": "All three containers running; nothing cleaned up",
+    "rollback_anchor": null,
+    "known_unverified": [
+      "External reachability (local target only)"
+    ],
+    "fragile": []
+  }
+}

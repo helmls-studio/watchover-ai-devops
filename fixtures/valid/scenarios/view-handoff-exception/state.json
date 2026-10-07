@@ -1,0 +1,147 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial target",
+    "provider_profile": "local",
+    "mode": "basic",
+    "updated_at": "2026-10-06T06:12:53Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "ai-deployer"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "awaiting_decision",
+  "activity": {
+    "summary": "Waiting for plan acceptance",
+    "started_at": "2026-10-06T06:06:53Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "human",
+    "last_progress": {
+      "at": "2026-10-06T06:06:53Z",
+      "summary": "View started at the URL printed by show"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: a small web app with one API service and one web service",
+    "components": [
+      {
+        "name": "api",
+        "role": "HTTP API"
+      },
+      {
+        "name": "web",
+        "role": "Serves the front end"
+      }
+    ],
+    "topology": "Both services run as local containers on this machine; only web is exposed on a local port",
+    "resource_rationale": "Two local containers are enough for a single tester",
+    "heavier_alternatives": [
+      {
+        "alternative": "An orchestration cluster",
+        "why_unnecessary": "Two services on one machine need no scheduler"
+      }
+    ],
+    "assumptions": [
+      "The container runtime on this machine is usable"
+    ]
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "local",
+        "name": "Local containers",
+        "composition": "api and web containers on this machine",
+        "region": "this machine",
+        "cost_range": {
+          "low": 0,
+          "high": 0,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": null,
+        "load_assumption": "One tester",
+        "uncertainty": "Runs on this machine at no cloud cost"
+      }
+    ],
+    "default_tier": "local",
+    "selected_tier": null
+  },
+  "pending_decision": {
+    "id": "dec-01",
+    "categories": [
+      "plan_acceptance"
+    ],
+    "action": "Run the api and web containers on this machine",
+    "targets": [
+      "api",
+      "web"
+    ],
+    "why": "The plan needs both services running",
+    "cost_or_blast_radius": "No cloud cost; uses this machine",
+    "reversibility": "Can stop and remove the containers; elapsed local compute time and requests already served cannot be undone. Unsaved container data may be lost.",
+    "rollback": "Stop and remove the two containers",
+    "success_check": "Both services answer on their local ports",
+    "reply_options": [
+      {
+        "reply": "approve",
+        "meaning": "Run the plan"
+      },
+      {
+        "reply": "change: <what>",
+        "meaning": "Revise the plan first"
+      }
+    ],
+    "requested_at": "2026-10-06T06:11:53Z"
+  },
+  "resources": [],
+  "sources": [],
+  "facts": [
+    {
+      "key": "view.page_unreachable",
+      "label": "The task page cannot be reached from the human's browser",
+      "value": null,
+      "status": "BLOCKED",
+      "source": "human",
+      "class": "network",
+      "scope": "This workspace view at the printed loopback URL",
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [
+        "evidence/0003-view-check.txt"
+      ],
+      "blocked_by": "The browser runs on another machine and cannot reach this machine's loopback address"
+    },
+    {
+      "key": "view.continue_with_disclosure",
+      "label": "Human chose to continue with the view limitation disclosed",
+      "value": "continue with disclosure",
+      "status": "USER_CONFIRMED",
+      "source": "human",
+      "class": "other",
+      "scope": "Releases planning without page confirmation only; not an approval for cost, DNS or deletion",
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": []
+    }
+  ],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "Human: approve or change the plan",
+    "decision_owner": "human"
+  },
+  "handoff": {
+    "read_first": [
+      "skills/router.md",
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

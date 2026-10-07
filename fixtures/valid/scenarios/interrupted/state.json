@@ -1,0 +1,98 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial target",
+    "provider_profile": "local",
+    "mode": "basic",
+    "updated_at": "2026-10-06T06:05:31Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "ai-deployer"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "executing",
+  "activity": {
+    "summary": "Session ended during the migration (evt-0009); no result was recorded",
+    "started_at": "2026-10-06T00:25:31Z",
+    "expected_duration": {
+      "min_minutes": 2,
+      "max_minutes": 10
+    },
+    "slow_reason": null,
+    "waiting_on": "ai",
+    "last_progress": {
+      "at": "2026-10-06T00:17:31Z",
+      "summary": "Containers started"
+    }
+  },
+  "brief": {
+    "app_summary": "demo-app: an API, a web front end and a background worker",
+    "components": [
+      {
+        "name": "api",
+        "role": "HTTP API"
+      },
+      {
+        "name": "web",
+        "role": "Front end"
+      },
+      {
+        "name": "worker",
+        "role": "Background jobs"
+      }
+    ],
+    "topology": "Three containers on this machine; web is exposed on a local port",
+    "resource_rationale": "One machine is enough for a single tester",
+    "heavier_alternatives": [
+      {
+        "alternative": "An orchestration cluster",
+        "why_unnecessary": "Three containers on one machine need no scheduler"
+      }
+    ],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [
+      {
+        "id": "local",
+        "name": "Local containers",
+        "composition": "api, web and worker containers",
+        "region": "this machine",
+        "cost_range": {
+          "low": 0,
+          "high": 0,
+          "currency": "USD",
+          "period": "month"
+        },
+        "price_checked_at": null,
+        "load_assumption": "One tester",
+        "uncertainty": "Runs on this machine at no cloud cost"
+      }
+    ],
+    "default_tier": "local",
+    "selected_tier": "local"
+  },
+  "pending_decision": null,
+  "resources": [],
+  "sources": [],
+  "facts": [],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "On resume: check intent evt-0009 (no result) against the live database before anything else; do not rerun it blind",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "skills/router.md",
+      "state.json",
+      "events.jsonl (recent events only)"
+    ],
+    "last_safe_state": "Containers started (evt-0008 result); migration not confirmed",
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}

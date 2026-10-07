@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1",
+  "identity": {
+    "project_alias": "demo-app",
+    "target_environment": "trial on GCP",
+    "provider_profile": "gcp",
+    "mode": "basic",
+    "updated_at": "2026-09-01T09:06:00Z",
+    "updated_by": {
+      "role": "ai",
+      "name": "deployer-ai"
+    },
+    "session_id": "session-a"
+  },
+  "stage": "recon",
+  "activity": {
+    "summary": "Recon: this example holds one BLOCKED fact",
+    "started_at": "2026-09-01T09:00:00Z",
+    "expected_duration": null,
+    "slow_reason": null,
+    "waiting_on": "ai",
+    "last_progress": null
+  },
+  "brief": {
+    "app_summary": null,
+    "components": [],
+    "topology": null,
+    "resource_rationale": null,
+    "heavier_alternatives": [],
+    "assumptions": []
+  },
+  "plan": {
+    "tiers": [],
+    "default_tier": null,
+    "selected_tier": null
+  },
+  "pending_decision": null,
+  "resources": [],
+  "sources": [],
+  "facts": [
+    {
+      "checked_at": null,
+      "fresh_for_minutes": null,
+      "evidence": [],
+      "key": "gcp.cpu_quota",
+      "label": "Regional CPU quota is sufficient",
+      "value": null,
+      "status": "BLOCKED",
+      "source": "remote_observation",
+      "class": "resource",
+      "scope": "CPU quota in us-central1 for demo-cloud-project",
+      "blocked_by": "The Service Usage API is not enabled on the project, so quotas cannot be read"
+    }
+  ],
+  "secrets": [],
+  "open_items": [],
+  "next": {
+    "action": "Continue recon",
+    "decision_owner": "ai"
+  },
+  "handoff": {
+    "read_first": [
+      "state.json"
+    ],
+    "last_safe_state": null,
+    "rollback_anchor": null,
+    "known_unverified": [],
+    "fragile": []
+  }
+}
