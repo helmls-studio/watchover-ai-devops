@@ -36,7 +36,7 @@ verdicts were INVALID. The final stage was a single Basic-mode observation with 
 evidence limits, not a controlled causal proof. These historical records do not validate
 the current 0.1.2 product or every cloud profile, and support no measured performance or
 causal-benefit claim. This edition contains no experiment procedures or raw run archives.
-The translated, redacted case archive is in preparation; see [Provenance](provenance.md).
+The translated, redacted case archive is now published; see [Provenance](provenance.md).
 
 ## Provider-independent records
 

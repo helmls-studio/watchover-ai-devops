@@ -8,17 +8,19 @@ unattended governance.
 
 ## Public process workbench
 
-The [HELM process workbench](https://github.com/desxyx/helm-ai-orchestration-workbench)
-is the public entry point. The detailed WatchOver case is in preparation. Planned routes
-under `council/task/ai-cicd/` in that workbench are:
+The [HELM process workbench](https://github.com/desxyx/helm-ai-orchestration-workbench) is the public entry point.
+The [WatchOver / AI CI/CD showcase](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd) is now published,
+covering requirements, Council decisions, implementation and review, deployment runs,
+interruptions, rework, the Mac-to-Windows handoff and public release:
 
-- Council conversations: `sessions/`, with decisions linked from `council-records/`.
-- Executor and Reviewer records: `execution-records/`.
-- Operations and handoffs: `operations-records/`.
+- [Council conversations](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/sessions) and [decision records](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/council-records).
+- [Executor and Reviewer records](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/executors/tasks/ai-cicd).
+- [Operations and handoffs (UserOps)](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/userops/tasks/ai-cicd).
 
-These are pending routes, not claims that deep links are already published. Public case
-records will be translated, redacted derivatives, not original unedited transcripts.
+The archive contains translated, redacted derivatives, not original unedited transcripts.
 Private identities, local paths, accounts and raw operational artifacts are excluded.
+Missing records and capture errors remain identified; publication does not establish
+complete transcript coverage or change the experimental limitations below.
 
 ## Product and evidence
 

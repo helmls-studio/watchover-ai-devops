@@ -72,7 +72,8 @@ test('README, validation and provenance agree on evidence and archive limits', a
     assert.match(text, /both formal(?:\s+arm)?\s+verdicts were INVALID/, file);
     assert.match(text, /single Basic-mode observation|one Basic-mode observation/, file);
     assert.match(text, /not a controlled causal proof/, file);
-    assert.match(text, /in preparation/, file);
+    assert.match(text, /is now published/, file);
+    assert.doesNotMatch(text, /in preparation|pending (?:archive )?routes|planned case archive/i, file);
   }
   const limits = await read('docs/validation.md');
   assert.match(limits, /test-only injected post-check failure/);
@@ -81,8 +82,7 @@ test('README, validation and provenance agree on evidence and archive limits', a
     const text = await read(file);
     assert.match(text, /built entirely through HELM's council, executor and operations workflow/);
     assert.match(text, /human.*(?:manually )?routed messages|manually routed messages/is);
-    for (const route of ['sessions/', 'council-records/', 'execution-records/', 'operations-records/']) assert.ok(text.includes(route), route);
-    assert.match(text, /pending (?:archive )?routes/i);
+    for (const route of ['/council/task/ai-cicd/sessions)', '/council/task/ai-cicd/council-records)', '/executors/tasks/ai-cicd)', '/userops/tasks/ai-cicd)']) assert.ok(text.includes(route), route);
     assert.match(text, /translated,\s+redacted derivatives/);
   }
 });

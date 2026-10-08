@@ -25,6 +25,11 @@ export const PUBLIC_URLS = [
   'https://github.com/helmls-studio/watchover-ai-devops',
   'https://github.com/helmls-studio/agent-run-recorder',
   'https://github.com/desxyx/helm-ai-orchestration-workbench',
+  'https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd',
+  'https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/sessions',
+  'https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/council-records',
+  'https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/executors/tasks/ai-cicd',
+  'https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/userops/tasks/ai-cicd',
 ];
 export const PUBLIC_LINK_FILES = new Set(['README.md', 'docs/provenance.md', 'docs/validation.md', 'tests/helpers/vocabulary.mjs']);
 export function withoutPublicLinks(text, file) {

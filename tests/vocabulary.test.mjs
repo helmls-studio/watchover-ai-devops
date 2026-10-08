@@ -75,9 +75,12 @@ test('external private terms detect neutral literal, escaped and split forms wit
   const url = PUBLIC_URLS[2];
   const username = new URL(url).pathname.split('/')[1];
   const accountTerms = [{ value: username, wholeWord: false }];
-  assert.deepEqual(contentViolations(`[process](${url})`, 'README.md', accountTerms), []);
-  for (const text of [username, url + '/private', url + '?redirect=1']) assert.ok(contentViolations(text, 'README.md', accountTerms).length);
-  assert.ok(contentViolations(url, 'tools/example.mjs', accountTerms).length);
+  for (const approved of PUBLIC_URLS.filter((value) => new URL(value).pathname.split('/')[1] === username)) {
+    assert.deepEqual(contentViolations(`[process](${approved})`, 'README.md', accountTerms), []);
+    for (const text of [approved + '/private', approved + '?redirect=1']) assert.ok(contentViolations(text, 'README.md', accountTerms).length);
+    assert.ok(contentViolations(approved, 'tools/example.mjs', accountTerms).length);
+  }
+  assert.ok(contentViolations(username, 'README.md', accountTerms).length);
 });
 
 test('the optional private input fails closed when configured incorrectly', async () => {

@@ -142,16 +142,17 @@ AI roles handled design, implementation and independent review; a human set the 
 routed messages and approved actions. The human manually carried messages between roles;
 this was not automatic inter-agent communication or unattended governance.
 
-The [public process workbench](https://github.com/desxyx/helm-ai-orchestration-workbench)
-describes HELM. The detailed WatchOver case is in preparation. Planned routes under
-`council/task/ai-cicd/` in that workbench are:
+The [public process workbench](https://github.com/desxyx/helm-ai-orchestration-workbench) describes HELM.
+The [WatchOver / AI CI/CD showcase](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd) is now published,
+with records of decisions, implementation, independent review, deployment runs, failures,
+rework and the Mac-to-Windows handoff:
 
-- Council conversations: `sessions/`, with decisions linked from `council-records/`.
-- Executor and Reviewer work: `execution-records/`.
-- Operations and handoffs: `operations-records/`.
+- [Council conversations](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/sessions) and [decision records](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/council/task/ai-cicd/council-records).
+- [Executor and Reviewer records](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/executors/tasks/ai-cicd).
+- [Operations and handoffs (UserOps)](https://github.com/desxyx/helm-ai-orchestration-workbench/tree/main/userops/tasks/ai-cicd).
 
-These are pending archive routes, not published deep links. The records will be translated,
-redacted derivatives, not original unedited transcripts. See [provenance](docs/provenance.md).
+The archive contains translated, redacted derivatives, not original unedited transcripts.
+Missing evidence and experimental limitations remain documented. See [provenance](docs/provenance.md).
 
 ## More
 
@@ -159,7 +160,7 @@ redacted derivatives, not original unedited transcripts. See [provenance](docs/p
 - [Architecture](docs/architecture.md): components and trust boundaries.
 - [Design decisions](docs/design-decisions.md): retained product choices and reasons.
 - [Validation](docs/validation.md): local coverage and evidence limits.
-- [Provenance](docs/provenance.md): HELM attribution and planned case archive.
+- [Provenance](docs/provenance.md): HELM attribution and published case archive.
 - [Agent Run Recorder](https://github.com/helmls-studio/agent-run-recorder): a separate
   related tool, not a dependency or evidence of WatchOver validation.
 
